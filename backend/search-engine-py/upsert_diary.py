@@ -31,7 +31,7 @@ def get_embedding(text):
 def upsert_diary(diary_data):
     """일기 데이터를 벡터 DB에 저장/업데이트"""
     try:
-        # 텍스트 준비 (날짜 + 제목 + 내용 + [비공개 캡션])
+        # 텍스트 준비: "{date} : {content} [첨부 미디어 내용] {caption1} {caption2} ..."
         date_str = diary_data.get('date', '')
         title = diary_data.get('title', '')
         content = diary_data.get('content', '')
@@ -47,7 +47,7 @@ def upsert_diary(diary_data):
         else:
             base_text = f"{title} {content}".strip()
         captions_text = " ".join([str(c).strip() for c in captions if str(c).strip()])
-        text = base_text if not captions_text else f"{base_text} {captions_text}".strip()
+        text = base_text if not captions_text else f"{base_text} [첨부 미디어 내용] {captions_text}".strip()
         if not text:
             return {"success": False, "message": "텍스트가 비어있습니다."}
         
